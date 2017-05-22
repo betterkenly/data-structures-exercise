@@ -25,21 +25,54 @@ treeMethods.contains = function(target) {
 			return true;
 		}
 		for (var i = 0 ; i < tree.children.length ; i++) {
-				return  search(tree.children[i]);
+			var temp = search(tree.children[i]);
+			if (temp === true) {
+				return true;
 			}
 		}
 		return false;
 	}
-	return search(this);
+	return search(this) === true? true: false;
 };
 
+treeMethods.removeFromParent = function(target){
+	var searchChild = function(tree){
 
+		for (var i = 0; i < tree.children.length; i++) {
+			if (tree.children[i].value === target) {
+				tree.children[i].parent = null;
+				tree.children.splice(i,1);
 
+			} else {
+				searchChild(tree.children[i]);
+			}
+		}
+	}
+	searchChild(this);
+}
 
-var tree = Tree(5);
+treeMethods.traverse = function(callback){
+	var search = function(tree){
+		callback(tree);
+		for (var i = 0; i < tree.children.length ; i++) {
+			search(tree.children[i]);
+		}
+	};
+	search(this);
+}
+		//1
+	// 2      3
+ //  7       8   9
 
-tree.addChild(5);
-tree.addChild(6);
+debugger;
+var tree = Tree(1);
+tree.addChild(2);
+tree.addChild(3);
 tree.children[0].addChild(7);
 tree.children[1].addChild(8);
-tree.contains(7);
+tree.children[1].addChild(9);
+// tree.removeFromParent(9);
+tree.contains(9);
+var func = function(x){ return x.value = x.value * 2};
+tree.traverse(func);
+console.log(tree.contains(18));
